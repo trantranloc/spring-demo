@@ -18,6 +18,17 @@ public class UserController {
         model.addAttribute("user", user);
         return "user/user_detail";
     }
+    @GetMapping("/user-form")
+    public String userForm(Model model) {
+        model.addAttribute("user", new User());
+        return "user/user_form";
+    }
+    @PostMapping("/user-info")
+    public String userInformation(@ModelAttribute User user ) {
+        System.out.println(user);
+        return "redirect:/users/user-form";
+
+    }
     @GetMapping("/update-user")
     public String updateUserForm(Model model) {
         User user = new User("1", "Loc Tran Tran", "Tran26122003@gmail.com", "0829757417", "Da Nang");
