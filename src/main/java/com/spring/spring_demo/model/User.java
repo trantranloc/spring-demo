@@ -55,4 +55,13 @@ public class User {
         this.address = address;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
