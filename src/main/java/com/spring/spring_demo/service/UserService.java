@@ -8,25 +8,16 @@ import java.util.List;
 
 @Service
 public class UserService {
-
-    private User user;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    public User getUser() {
-        if (user == null) {
-            user = new User();
-        }
-        return user;
     }
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public void saveUser(User user) {
-        this.user = user;
+        userRepository.save(user);
     }
     public User getUserById(String id) {
         return userRepository.getById(id);

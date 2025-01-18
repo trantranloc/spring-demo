@@ -9,15 +9,11 @@
 </head>
 
 <body>
-    <div class="container mt-5 text-center">
-        <h1>Welcome to Our Website</h1>
-        <p>Explore our features and learn more about our services.</p>
-        <!-- <a href="/users/user-detail" class="btn btn-primary">View User Detail</a> -->
-        <a href="/users/user-form" class="btn btn-outline-primary">View User Form</a>
-    </div>
 
     <div class="container mt-5">
         <h2 class="text-center">Danh sách thông tin</h2>
+        <a href="/users/add-form" class="btn btn-primary mb-3">Add User</a>
+
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
             <tr>
@@ -30,15 +26,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.id}"></td>
+            <tr th:each="user,i : ${users}">
+                <td th:text="${i.index+1}"></td>
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.phone}"></td>
                 <td th:text="${user.address}"></td>
                 <td>
+                    <a th:href="@{/users/detail/{id}(id=${user.id})}" class="btn btn-primary btn-sm">Chi tiết </a>
                     <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                    <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm">Xóa</a>
+                    <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
                 </td>
             </tr>
 
