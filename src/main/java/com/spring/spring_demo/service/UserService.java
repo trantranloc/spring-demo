@@ -4,6 +4,8 @@ import com.spring.spring_demo.model.User;
 import com.spring.spring_demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -18,6 +20,9 @@ public class UserService {
             user = new User();
         }
         return user;
+    }
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     public void saveUser(User user) {

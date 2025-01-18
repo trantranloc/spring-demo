@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.spring.spring_demo.model.User;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -14,6 +16,14 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    @GetMapping
+    public String getUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user/list_user";
+    }
+
 
     @GetMapping("/user-form")
     public String userForm(Model model) {
