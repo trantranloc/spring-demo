@@ -1,6 +1,15 @@
 package com.spring.spring_demo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users_demo")
 public class User {
+    @Id
+    @GeneratedValue
     private String id;
     private String name;
     private String email;
