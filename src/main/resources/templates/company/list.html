@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh sách công ty</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center">Danh sách Công Ty</h2>
+    <a href="/company/add" class="btn btn-primary mb-3">Thêm công ty</a>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Tên công ty</th>
+            <th>Email</th>
+            <th>Địa chỉ</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="company, index : ${companies}">
+            <td th:text="${index.count}"></td>
+            <td th:text="${company.name}"></td>
+            <td th:text="${company.email}"></td>
+            <td th:text="${company.address}"></td>
+            <td>
+                <a th:href="@{/company/{id}(id=${company.id})}" class="btn btn-info btn-sm">Chi tiết</a>
+                <a th:href="@{/company/edit/{id}(id=${company.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                <a th:href="@{/company/delete/{id}(id=${company.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa công ty này không?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
