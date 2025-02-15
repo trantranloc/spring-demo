@@ -32,16 +32,14 @@ public class CompanyService {
     public void deleteCompany(String id) {
         companyRepository.deleteById(id);
     }
-
     public void addUserToCompany(String companyId, String userId) {
-        Optional<Company> companyOpt = companyRepository.findById(companyId);
-        Optional<User> userOpt = userRepository.findById(userId);
+        Company company = companyRepository.findById(companyId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
 
-        if (companyOpt.isPresent() && userOpt.isPresent()) {
-            Company company = companyOpt.get();
-            User user = userOpt.get();
+        if (company != null && user != null) {
             company.getUsers().add(user);
             companyRepository.save(company);
         }
     }
+
 }
