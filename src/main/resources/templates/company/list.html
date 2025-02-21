@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-4">
     <h2 class="text-center">Danh sách Công Ty</h2>
-    <a href="/company/add" class="btn btn-primary mb-3">Thêm công ty</a>
+    <a href="/companies/add" class="btn btn-primary mb-3">Thêm công ty</a>
 
     <table class="table table-bordered">
         <thead class="table-dark">
@@ -28,9 +28,9 @@
             <td th:text="${company.email}"></td>
             <td th:text="${company.address}"></td>
             <td>
-                <a th:href="@{/company/{id}(id=${company.id})}" class="btn btn-info btn-sm">Chi tiết</a>
-                <a th:href="@{/company/edit/{id}(id=${company.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                <a th:href="@{/company/delete/{id}(id=${company.id})}" class="btn btn-danger btn-sm"
+                <a th:href="@{/companies/{id}(id=${company.id})}" class="btn btn-info btn-sm">Chi tiết</a>
+                <a th:href="@{/companies/edit/{id}(id=${company.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                <a th:href="@{/companies/delete/{id}(id=${company.id})}" class="btn btn-danger btn-sm"
                    onclick="return confirm('Bạn có chắc muốn xóa công ty này không?');">Xóa</a>
             </td>
         </tr>

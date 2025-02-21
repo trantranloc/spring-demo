@@ -54,15 +54,9 @@ public class UserController {
 
     @PostMapping("/edit")
     public String updateUser(@ModelAttribute User user) {
-        if (user.getId() == null) {
-            // Xử lý lỗi, có thể thêm thông báo hoặc log
-            return "redirect:/users?error=InvalidUserId";
-        }
+
         User userExists = userService.getUserById(user.getId());
-        if (userExists == null) {
-            // Xử lý khi không tìm thấy người dùng
-            return "redirect:/users?error=UserNotFound";
-        }
+
         userExists.setName(user.getName());
         userExists.setEmail(user.getEmail());
         userExists.setAddress(user.getAddress());

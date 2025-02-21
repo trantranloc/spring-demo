@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/company")
+@RequestMapping("/companies")
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -42,7 +42,7 @@ public class CompanyController {
     @PostMapping("/add")
     public String addCompany(@ModelAttribute("company") Company company) {
         companyService.saveCompany(company);
-        return "redirect:/company";
+        return "redirect:/companies";
     }
 
     // Hiển thị form chỉnh sửa công ty
@@ -53,31 +53,24 @@ public class CompanyController {
             model.addAttribute("company", company.get());
             return "company/edit_form";
         }
-        return "redirect:/company";
+        return "redirect:/companies";
     }
 
     @PostMapping("/edit/{id}")
     public String updateCompany(@PathVariable String id, @ModelAttribute("company") Company updatedCompany) {
-        // Lấy công ty cũ từ database
         Optional<Company> existingCompany = companyService.getCompanyById(id);
-
-        // Giữ lại danh sách nhân viên cũ
         updatedCompany.setUsers(existingCompany.get().getUsers());
-
-        // Cập nhật thông tin công ty
         updatedCompany.setId(id);
-
-        // Lưu công ty đã cập nhật
         companyService.saveCompany(updatedCompany);
 
-        return "redirect:/company";
+        return "redirect:/companies";
     }
 
     // Xóa công ty
     @GetMapping("/delete/{id}")
     public String deleteCompany(@PathVariable String id) {
         companyService.deleteCompany(id);
-        return "redirect:/company";
+        return "redirect:/companies";
     }
 
     // Xem chi tiết công ty và thêm user vào công ty
@@ -89,13 +82,13 @@ public class CompanyController {
             model.addAttribute("users", userService.getAllUsers()); // Lấy danh sách user để thêm vào công ty
             return "company/detail";
         }
-        return "redirect:/company";
+        return "redirect:/companies";
     }
 
     // Thêm user vào công ty
     @PostMapping("/{companyId}/add-user")
     public String addUserToCompany(@PathVariable String companyId, @RequestParam String userId) {
         companyService.addUserToCompany(companyId, userId);
-        return "redirect:/company/" + companyId;
+        return "redirect:/companies/" + companyId;
     }
 }
