@@ -73,13 +73,13 @@ public class CompanyController {
         return "redirect:/companies";
     }
 
-    // Xem chi tiết công ty và thêm user vào công ty
+    // Xem chi tiết
     @GetMapping("/{id}")
     public String companyDetail(@PathVariable String id, Model model) {
         Optional<Company> company = companyService.getCompanyById(id);
         if (company.isPresent()) {
             model.addAttribute("company", company.get());
-            model.addAttribute("users", userService.getAllUsers()); // Lấy danh sách user để thêm vào công ty
+            model.addAttribute("users", userService.getAllUsers());
             return "company/detail";
         }
         return "redirect:/companies";

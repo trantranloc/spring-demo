@@ -37,7 +37,7 @@
         </table>
 
         <h3 class="mt-4">Thêm nhân viên vào công ty</h3>
-        <form th:action="@{/companies/{id}/add-user(id=${company.id})}" method="post" class="row g-3">
+        <form th:action="@{/companies/{id}/add-user(id=${company.id})}" method="get" class="row g-3">
             <div class="col-md-8">
                 <select name="userId" class="form-select">
                     <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
