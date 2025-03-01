@@ -1,5 +1,7 @@
 package com.spring.spring_demo.controller;
 
+import com.spring.spring_demo.model.Role;
+import com.spring.spring_demo.repository.RoleRepository;
 import com.spring.spring_demo.repository.UserRepository;
 import com.spring.spring_demo.service.UserService;
 
@@ -16,10 +18,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/list-user")
@@ -55,8 +59,10 @@ public class UserController {
 
     @GetMapping("/edit/{userId}")
     public String updateUserForm(Model model, @PathVariable String userId) {
+        List<Role> roles = roleRepository.findAll();
         User user = userService.getUserById(userId);
         model.addAttribute("user", user);
+        model.addAttribute("roles", roles);
         return "user/user_update";
     }
 
@@ -64,7 +70,6 @@ public class UserController {
     public String updateUser(@ModelAttribute User user) {
 
         User userExists = userService.getUserById(user.getId());
-
         userExists.setName(user.getName());
         userExists.setEmail(user.getEmail());
         userExists.setAddress(user.getAddress());

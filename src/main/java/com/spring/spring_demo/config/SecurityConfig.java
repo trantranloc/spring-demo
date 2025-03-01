@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +45,7 @@ public class SecurityConfig {
                                 .requestMatchers("/login","/register","/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                         ).csrf(AbstractHttpConfigurer::disable)
+                        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                         .formLogin(form -> form
                                 .loginPage("/login")
                                 .successHandler((request, response, authentication) -> {
@@ -58,7 +60,7 @@ public class SecurityConfig {
                                         } else if (user.isPresent()) {
                                                 response.sendRedirect("/users/detail/" + user.get().getId());
                                         } else {
-                                                response.sendRedirect("/login/error");
+                                                response.sendRedirect("/login?error");
                                         }
                                 })
                                 .permitAll()
