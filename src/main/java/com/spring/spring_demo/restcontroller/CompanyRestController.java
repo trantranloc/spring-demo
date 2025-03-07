@@ -3,6 +3,7 @@ package com.spring.spring_demo.restcontroller;
 import com.spring.spring_demo.model.Company;
 import com.spring.spring_demo.service.CompanyService;
 import com.spring.spring_demo.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,18 +22,33 @@ public class CompanyRestController {
     }
 
     @GetMapping()
-    public List<Company> getAllCompanies(){
-        return companyService.getAllCompanies();
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        List<Company> companies = companyService.getAllCompanies();
+        if (companies.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Trả về 204 nếu không có dữ liệu
+        }
+        return ResponseEntity.ok(companies);
     }
+
     @PostMapping()
-    public Company createCompany(@RequestBody Company company) {
-        return companyService.saveCompany(company);
+    public ResponseEntity<Company> createCompany(@RequestBody Company company) {
+        if (company.getId() != null && companyService.getCompanyById(company.getId()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Tránh trùng lặp
+        }
+        Company savedCompany = companyService.saveCompany(company);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCompany);
     }
+
     @DeleteMapping("/{id}")
-    public String deleteCompany(@PathVariable String id) {
+    public ResponseEntity<String> deleteCompany(@PathVariable String id) {
+        Optional<Company> company = companyService.getCompanyById(id);
+        if (company.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
+        }
         companyService.deleteCompany(id);
-        return "Delete Complete";
+        return ResponseEntity.ok("Delete Complete");
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Company> updateCompany(@PathVariable String id, @RequestBody Company company) {
         Optional<Company> companyExists = companyService.getCompanyById(id);
@@ -44,8 +60,7 @@ public class CompanyRestController {
             companyService.saveCompany(existingCompany);
             return ResponseEntity.ok(existingCompany);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
 }
