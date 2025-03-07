@@ -28,7 +28,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         Role role = roleRepository.findByRole("ROLE_USER")
                 .orElseGet(() -> {
                     Role newRole = new Role("ROLE_USER");
@@ -36,7 +36,7 @@ public class UserService {
                 });
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(new HashSet<>(Collections.singleton(role)));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
     public User getUserById(String id) {
         return userRepository.getById(id);
