@@ -40,6 +40,7 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
                 http
                         .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/users/list-user", "/users/add-form", "/users/add", "/users/delete/**").hasRole("ADMIN") // Chỉ ADMIN được phép quản lý user
                                 .requestMatchers( "/users/edit/**","/users/detail/**").authenticated()
                                 .requestMatchers("/login","/register","/h2-console/**").permitAll()
