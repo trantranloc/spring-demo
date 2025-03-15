@@ -2,65 +2,63 @@ package com.spring.spring_demo.restcontroller;
 
 import com.spring.spring_demo.model.Company;
 import com.spring.spring_demo.service.CompanyService;
-import com.spring.spring_demo.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyRestController {
     private final CompanyService companyService;
-    private final UserService userService;
 
-    public CompanyRestController(CompanyService companyService, UserService userService) {
+    public CompanyRestController(CompanyService companyService) {
         this.companyService = companyService;
-        this.userService = userService;
     }
 
     @GetMapping()
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        List<Company> companies = companyService.getAllCompanies();
-        if (companies.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Trả về 204 nếu không có dữ liệu
-        }
-        return ResponseEntity.ok(companies);
+    public List<Company> getAllCompanies() {
+        return companyService.getAllCompanies();
+    }
+
+    @GetMapping("{id}")
+    public Optional<Company> getCompanyById(@PathVariable String id) {
+        return companyService.getCompanyById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<Company> createCompany(@RequestBody Company company) {
+    public Company createCompany(@RequestBody Company company) {
         if (company.getId() != null && companyService.getCompanyById(company.getId()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Tránh trùng lặp
+            return null;
         }
-        Company savedCompany = companyService.saveCompany(company);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCompany);
+        return companyService.saveCompany(company);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCompany(@PathVariable String id) {
+    public String deleteCompany(@PathVariable String id) {
         Optional<Company> company = companyService.getCompanyById(id);
-        if (company.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
+        if (company.isPresent()) {
+            companyService.deleteCompany(id);
         }
-        companyService.deleteCompany(id);
-        return ResponseEntity.ok("Delete Complete");
+        return "Delete Complete";
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompany(@PathVariable String id, @RequestBody Company company) {
+    public Company updateCompany(@PathVariable String id, @RequestBody Company company) {
         Optional<Company> companyExists = companyService.getCompanyById(id);
         if (companyExists.isPresent()) {
             Company existingCompany = companyExists.get();
             existingCompany.setName(company.getName());
             existingCompany.setEmail(company.getEmail());
             existingCompany.setAddress(company.getAddress());
-            companyService.saveCompany(existingCompany);
-            return ResponseEntity.ok(existingCompany);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return companyService.saveCompany(existingCompany);
         }
+        return null;
     }
+    @PostMapping("/add-user")
+    public String addUserToCompany(@RequestParam String companyId, @RequestParam String userId) {
+         companyService.addUserToCompany(companyId, userId);
+         return "Add User Complete";
+    }
+
 }

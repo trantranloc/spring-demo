@@ -18,7 +18,9 @@ public class User {
     private String address;
 
     private String username;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
