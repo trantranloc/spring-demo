@@ -28,16 +28,16 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User saveUser(User user) {
-        Role role = roleRepository.findByRole("ROLE_USER")
-                .orElseGet(() -> {
-                    Role newRole = new Role("ROLE_USER");
-                    return roleRepository.save(newRole);
-                });
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(new HashSet<>(Collections.singleton(role)));
-        return userRepository.save(user);
-    }
+//    public User saveUser(User user) {
+//        Role role = roleRepository.findByRole("ROLE_USER")
+//                .orElseGet(() -> {
+//                    Role newRole = new Role("ROLE_USER");
+//                    return roleRepository.save(newRole);
+//                });
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setRoles(new HashSet<>(Collections.singleton(role)));
+//        return userRepository.save(user);
+//    }
     public User getUserById(String id) {
         return userRepository.getById(id);
     }
@@ -49,9 +49,30 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Xóa liên kết trong bảng trung gian
         user.getRoles().clear();
-        userRepository.save(user);
-        userRepository.deleteById(id);
+
+        // Xóa user trực tiếp, không gọi save() trước đó
+        userRepository.delete(user);
     }
 
+    public User saveUser(User user) {
+        Role role = roleRepository.findByRole("ROLE_USER")
+                .orElseGet(() -> {
+                    Role newRole = new Role("ROLE_USER");
+                    return roleRepository.save(newRole);
+                });
+
+        // Mã hóa mật khẩu nếu nó chưa được mã hóa
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        // Gán roles nếu chưa có
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>(Collections.singleton(role)));
+        }
+
+        return userRepository.save(user);
+    }
 }
