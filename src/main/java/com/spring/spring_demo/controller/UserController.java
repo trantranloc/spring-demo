@@ -1,6 +1,10 @@
 package com.spring.spring_demo.controller;
 
+import com.spring.spring_demo.model.Role;
+import com.spring.spring_demo.repository.RoleRepository;
+import com.spring.spring_demo.repository.UserRepository;
 import com.spring.spring_demo.service.UserService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +17,16 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    public UserController(UserService userService) {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
+    public UserController(UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
-    @GetMapping
+    @GetMapping("/list-user")
     public String getUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
@@ -34,8 +43,11 @@ public class UserController {
     @PostMapping("/add")
     public String addUser(@ModelAttribute User user) {
         userService.saveUser(user);
-        System.out.println("User: " + user);
-        return "redirect:/users";
+        if (user.getId() == null) {
+            return "redirect:/users/list-user";
+        }
+        return "redirect:/users/detail/" + user.getId();
+
     }
 
     @GetMapping("/detail/{userId}")
@@ -46,33 +58,31 @@ public class UserController {
     }
 
     @GetMapping("/edit/{userId}")
-    public String updateUserForm(Model model,@PathVariable String userId) {
+    public String updateUserForm(Model model, @PathVariable String userId) {
+        List<Role> roles = roleRepository.findAll();
         User user = userService.getUserById(userId);
         model.addAttribute("user", user);
+        model.addAttribute("roles", roles);
         return "user/user_update";
     }
 
     @PostMapping("/edit")
     public String updateUser(@ModelAttribute User user) {
-        if (user.getId() == null) {
-            // Xử lý lỗi, có thể thêm thông báo hoặc log
-            return "redirect:/users?error=InvalidUserId";
-        }
+
         User userExists = userService.getUserById(user.getId());
-        if (userExists == null) {
-            // Xử lý khi không tìm thấy người dùng
-            return "redirect:/users?error=UserNotFound";
-        }
         userExists.setName(user.getName());
         userExists.setEmail(user.getEmail());
         userExists.setAddress(user.getAddress());
         userExists.setPhone(user.getPhone());
-        userService.saveUser(userExists);
-        return "redirect:/users";
+        userService.updateUser(userExists);
+        return "redirect:/users/detail/" + user.getId();
     }
+
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
-        return "redirect:/users";
+        return "redirect:/users/list-user";
     }
+
+
 }

@@ -96,7 +96,19 @@
             <label for="phone">Phone:</label>
             <input type="text" id="phone" th:field="*{phone}" required><br><br>
         </div>
-        <button type="submit" class="btn">Update</button>
+        <div class="form-group">
+        <label for="roles">Role:</label>
+        <select id="roles" name="role">
+            <option th:each="role : ${roles}"
+                    th:value="${role.id}"
+                    th:text="${role.role}"
+                    th:selected="${#lists.contains(user.roles, role)}">
+            </option>
+        </select>
+        </div>
+
+
+        <button type="submit" class="btn mt-5">Update</button>
     </form>
 </div>
 </body>

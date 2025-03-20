@@ -9,6 +9,13 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String role;
+    public Role( String role){
+        this.role = role;
+    }
+
+    public Role() {
+
+    }
 
     public String getRole() {
         return role;

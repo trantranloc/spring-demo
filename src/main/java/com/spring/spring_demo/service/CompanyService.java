@@ -25,8 +25,8 @@ public class CompanyService {
         return companyRepository.findById(id);
     }
 
-    public void saveCompany(Company company) {
-        companyRepository.save(company);
+    public Company saveCompany(Company company) {
+        return companyRepository.save(company);
     }
 
     public void deleteCompany(String id) {
