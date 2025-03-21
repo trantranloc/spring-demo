@@ -49,7 +49,7 @@ public class AuthenRestController {
 
         // Tạo user mới
         User user = new User();
-        user.setEmail(userRequest.getUsername());
+        user.setUsername(userRequest.getUsername());
         user.setPassword(encodedPassword);
         Set<Role> roles = new HashSet<>(List.of(new Role("ROLE_USER")));
         user.setRoles(roles);
