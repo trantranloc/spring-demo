@@ -2,7 +2,6 @@ package com.spring.spring_demo.controller;
 
 import com.spring.spring_demo.model.Role;
 import com.spring.spring_demo.repository.RoleRepository;
-import com.spring.spring_demo.repository.UserRepository;
 import com.spring.spring_demo.service.UserService;
 
 import org.springframework.stereotype.Controller;
@@ -17,12 +16,10 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public UserController(UserService userService, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
-        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
 

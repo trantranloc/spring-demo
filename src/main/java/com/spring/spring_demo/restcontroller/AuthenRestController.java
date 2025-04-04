@@ -5,10 +5,12 @@ import com.spring.spring_demo.filter.JwtService;
 import com.spring.spring_demo.model.Role;
 import com.spring.spring_demo.model.User;
 import com.spring.spring_demo.repository.UserRepository;
+import com.spring.spring_demo.service.CustomUserDetailsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +26,13 @@ public class AuthenRestController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public AuthenRestController(UserRepository userRepository, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthenRestController(UserRepository userRepository, JwtService jwtService, AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @GetMapping("/welcome")
@@ -58,7 +62,7 @@ public class AuthenRestController {
         return ResponseEntity.ok(Map.of("message", "Register success"));
     }
 
-    @PostMapping("/generateToken")
+    @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         try {
             Authentication authentication =
@@ -81,5 +85,16 @@ public class AuthenRestController {
         }
 
         return ResponseEntity.status(401).body(Map.of("message", "Authentication failed"));
+    }
+    @PostMapping("/validate")
+    public ResponseEntity<Map<String, String>> validateToken(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtService.extractUsername(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+        boolean isValid = jwtService.validateToken(token, userDetails);
+        return ResponseEntity
+                .status(isValid ? 200 : 401)
+                .body(Map.of("message", isValid ? "Token hợp lệ" : "Token không hợp lệ"));
     }
 }

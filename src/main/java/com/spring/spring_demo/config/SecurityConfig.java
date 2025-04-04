@@ -49,12 +49,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/login", "/register", "/h2-console/**", "/api/generateToken","/api/register").permitAll()
+                        .requestMatchers("/login", "/register", "/h2-console/**", "/api/generateToken", "/api/login","/api/register","/api/validate").permitAll()
                         // API endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/users", "/api/users/**").hasRole("ADMIN")
 
-                                // Web endpoints
                         .requestMatchers("/users/list-user", "/users/add-form", "/users/add", "/users/delete/**").hasRole("ADMIN")
                         .requestMatchers("/users/edit/**", "/users/detail/**").authenticated()
                         .requestMatchers("/login", "/register").permitAll()
